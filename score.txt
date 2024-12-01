@@ -1,0 +1,16 @@
+Date and Time: 2024-11-16 17:08:58
+Total Games Played: 1
+Correct answers on the first attempt: 6
+Correct answers on the second attempt: 0
+Incorrect answers: 4
+Total WordGame.Score: 12
+Average WordGame.Score: 12.00
+-------------------------------------
+Date and Time: 2024-11-16 17:10:56
+Total Games Played: 2
+Correct answers on the first attempt: 6
+Correct answers on the second attempt: 0
+Incorrect answers: 14
+Total WordGame.Score: 12
+Average WordGame.Score: 6.00
+-------------------------------------

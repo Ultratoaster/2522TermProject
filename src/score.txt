@@ -1,0 +1,136 @@
+Date and Time: 2024-11-16 16:52:31
+Total Games Played: 1
+Correct answers on the first attempt: 1
+Correct answers on the second attempt: 2
+Incorrect answers: 7
+Total WordGame.Score: 4
+Average WordGame.Score: 4.00
+
+Date and Time: 2024-11-16 16:54:37
+Total Games Played: 1
+Correct answers on the first attempt: 2
+Correct answers on the second attempt: 0
+Incorrect answers: 8
+Total WordGame.Score: 4
+Average WordGame.Score: 4.00
+
+Date and Time: 2024-11-16 17:22:46
+Total Games Played: 1
+Correct answers on the first attempt: 1
+Correct answers on the second attempt: 0
+Incorrect answers: 9
+Total WordGame.Score: 2
+Average WordGame.Score: 2.00
+
+Date and Time: 2024-11-16 17:26:39
+Total Games Played: 1
+Correct answers on the first attempt: 3
+Correct answers on the second attempt: 0
+Incorrect answers: 7
+Total WordGame.Score: 6
+Average WordGame.Score: 6.00
+
+Date and Time: 2024-11-18 20:37:50
+Total Games Played: 1
+Correct answers on the first attempt: 2
+Correct answers on the second attempt: 0
+Incorrect answers: 8
+Total WordGame.Score: 4
+Average WordGame.Score: 4.00
+
+Date and Time: 2024-11-18 20:43:49
+Total Games Played: 1
+Correct answers on the first attempt: 1
+Correct answers on the second attempt: 0
+Incorrect answers: 9
+Total WordGame.Score: 2
+Average WordGame.Score: 2.00
+
+Date and Time: 2024-11-18 20:46:09
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total WordGame.Score: 0
+Average WordGame.Score: 0.00
+
+Date and Time: 2024-11-18 20:48:10
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total WordGame.Score: 0
+Average WordGame.Score: 0.00
+
+Date and Time: 2024-11-28 10:21:52
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 1
+Incorrect answers: 9
+Total WordGame.Score: 1
+Average WordGame.Score: 1.00
+
+Date and Time: 2024-11-30 10:50:32
+Total Games Played: 1
+Correct answers on the first attempt: 1
+Correct answers on the second attempt: 0
+Incorrect answers: 9
+Total WordGame.Score: 2
+Average WordGame.Score: 2.00
+
+Date and Time: 2024-11-30 11:07:14
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total WordGame.Score: 0
+Average WordGame.Score: 0.00
+
+Date and Time: 2024-11-30 11:27:07
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total WordGame.Score: 0
+Average WordGame.Score: 0.00
+
+Date and Time: 2024-11-30 13:05:55
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total WordGame.Score: 0
+Average WordGame.Score: 0.00
+
+Date and Time: 2024-11-30 14:17:44
+Total Games Played: 1
+Correct answers on the first attempt: 1
+Correct answers on the second attempt: 1
+Incorrect answers: 8
+Total Score: 3
+Average Score: 3.00
+
+Date and Time: 2024-11-30 18:08:24
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+
+Date and Time: 2024-11-30 19:13:45
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+
+Date and Time: 2024-11-30 20:34:04
+Total Games Played: 1
+Correct answers on the first attempt: 3
+Correct answers on the second attempt: 0
+Incorrect answers: 7
+Total Score: 6
+Average Score: 6.00
+
