@@ -1,38 +1,53 @@
 package TypingGame;
 
-public class BackgroundImageController implements LevelObserver
-{
+import java.net.URL;
 
-    private String backgroundImage;
+/**
+ * Controller responsible for updating and retrieving the background image path
+ * based on the current game level.
+ */
+class BackgroundImageController extends LevelObserver {
 
-    public BackgroundImageController() {
-        this.backgroundImage = "images/level1_background.png";  // Default background for level 1
+    private static final int INITIAL_LEVEL = 1;
+    private String backgroundImagePath;
+
+    /**
+     * Constructor that sets the default background for level 1.
+     */
+    BackgroundImageController() {
+        updateLevel(INITIAL_LEVEL);
     }
 
-
+    /**
+     * Updates the background image based on the provided level.
+     * If the image for the current level is not found, it defaults to level 1 background.
+     *
+     * @param level The current game level used to determine the background image.
+     */
     @Override
-    public void updateLevel(int level) {
-        System.out.println("Level increased: " + level);
-        // Update the background image based on the level
-        switch (level) {
-            case 1:
-                backgroundImage = "images/level1_background.png";
-                break;
-            case 2:
-                backgroundImage = "images/level2_background.png";
-                break;
-            case 3:
-                backgroundImage = "images/level3_background.png";
-                break;
-            default:
-                break;
-        }
+    public void updateLevel(final int level) {
+        final String folderPath;
+        final String imagePath;
+        final URL imageURL;
 
-        // Here you would actually update the background image in your game (e.g., GUI)
-        System.out.println("Updated Background to: " + backgroundImage);
+        folderPath = "images/level_backgrounds";
+        imagePath = folderPath + "/level" + level + "_background.png";
+        imageURL = getClass().getClassLoader().getResource(imagePath);
+
+
+        if (imageURL != null) {
+            backgroundImagePath = imageURL.toString();
+        } else {
+            backgroundImagePath = "images/level_backgrounds/level1_background.png";
+        }
     }
 
-    public String getBackground(){
-        return backgroundImage;
+    /**
+     * Retrieves the path to the background image for the current level.
+     *
+     * @return The file path or URL of the background image.
+     */
+    String getBackground() {
+        return backgroundImagePath;
     }
 }

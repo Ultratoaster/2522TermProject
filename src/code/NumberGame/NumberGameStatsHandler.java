@@ -8,9 +8,9 @@ package NumberGame;
  * @author Ben Henry
  * @version 1.0
  */
-public class NumberGameStatsHandler {
-
-    private static final int INITIAL_VALUE_FOR_ALL = 0;
+class NumberGameStatsHandler
+{
+    private static final int ZERO_TOTAL_GAMES = 0;
 
     private int totalGames = 0;
     private int totalWins = 0;
@@ -18,20 +18,12 @@ public class NumberGameStatsHandler {
     private int totalPlacements = 0;
 
     /**
-     * Returns the total number of games played.
-     *
-     * @return the total number of games played
-     */
-    public int getTotalGames() {
-        return totalGames;
-    }
-
-    /**
      * Returns the total number of wins.
      *
      * @return the total number of wins
      */
-    public int getTotalWins() {
+    int getTotalWins()
+    {
         return totalWins;
     }
 
@@ -40,7 +32,8 @@ public class NumberGameStatsHandler {
      *
      * @return the total number of losses
      */
-    public int getTotalLosses() {
+    int getTotalLosses()
+    {
         return totalLosses;
     }
 
@@ -49,7 +42,8 @@ public class NumberGameStatsHandler {
      *
      * @return the total number of placements
      */
-    public int getTotalPlacements() {
+    int getTotalPlacements()
+    {
         return totalPlacements;
     }
 
@@ -58,8 +52,9 @@ public class NumberGameStatsHandler {
      *
      * @return the average number of placements per game
      */
-    public double getAveragePlacements() {
-        return (double) totalPlacements / totalGames;
+    double getAveragePlacements()
+    {
+        return totalGames > ZERO_TOTAL_GAMES ? (double) totalPlacements / totalGames : ZERO_TOTAL_GAMES;
     }
 
     /**
@@ -67,7 +62,8 @@ public class NumberGameStatsHandler {
      *
      * @param placements the number of successful placements in the game
      */
-    public void recordWin(int placements) {
+    void recordWin(final int placements)
+    {
         totalWins++;
         totalGames++;
         totalPlacements += placements;
@@ -78,7 +74,8 @@ public class NumberGameStatsHandler {
      *
      * @param placements the number of successful placements in the game
      */
-    public void recordLoss(int placements) {
+    void recordLoss(final int placements)
+    {
         totalLosses++;
         totalGames++;
         totalPlacements += placements;
@@ -89,21 +86,13 @@ public class NumberGameStatsHandler {
      *
      * @return the formatted statistics string
      */
-    public String getStatistics() {
+    String getStatistics()
+    {
         System.out.println(totalGames + " " + totalWins + " " + totalLosses + " " + totalPlacements);
         return String.format(
-                "Games Played: %d | Wins: %d\nLosses: %d | Placements: %d | Avg/Game: %.2f",
-                totalGames, totalWins, totalLosses, totalPlacements, getAveragePlacements()
+                "Games Played: %d | Wins: %d%sLosses: %d | Placements: %d | Avg/Game: %.2f",
+                totalGames, totalWins, System.lineSeparator(), totalLosses, totalPlacements, getAveragePlacements()
         );
     }
 
-    /**
-     * Resets all statistics to zero for a fresh start.
-     */
-    public void resetStats() {
-        totalGames = INITIAL_VALUE_FOR_ALL;
-        totalWins = INITIAL_VALUE_FOR_ALL;
-        totalLosses = INITIAL_VALUE_FOR_ALL;
-        totalPlacements = INITIAL_VALUE_FOR_ALL;
-    }
 }

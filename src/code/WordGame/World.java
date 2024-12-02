@@ -17,15 +17,16 @@ public class World
 {
     private static final String COUNTRY_CAPITAL_SEPARATOR = ":";
     private static final String FILE_EXTENSION = "*.txt";
-    private static final String ERROR_NO_FACTS = "No facts found for country: ";
 
     private static final int COUNTRY_NAME_INDEX = 0;
     private static final int CAPITAL_CITY_INDEX = 1;
-    public static final int EXPECTED_HEADER_PARTS = 2;
-    public static final int ZERO_ARRAY_SIZE = 0;
-    public static final int CAPITAL_CITY_NAME_INDEX = 1;
 
     private final Map<String, Country> countriesMap;
+
+    static final int EXPECTED_HEADER_PARTS = 2;
+    static final int ZERO_ARRAY_SIZE = 0;
+    static final int CAPITAL_CITY_NAME_INDEX = 1;
+
 
     /**
      * Creates a new World object with an empty map of countries.
@@ -40,7 +41,7 @@ public class World
      *
      * @return A map of country names to their respective Country objects.
      */
-    public Map<String, Country> getCountriesMap()
+    Map<String, Country> getCountriesMap()
     {
         return countriesMap;
     }
@@ -50,9 +51,9 @@ public class World
      *
      * @param country The Country object to add.
      */
-    public void addCountry(final Country country)
+    void addCountry(final Country country)
     {
-        countriesMap.put(country.getName(), country);
+        countriesMap.put(country.name(), country);
     }
 
     /**
@@ -61,7 +62,7 @@ public class World
      * @param countryName The name of the country.
      * @return The Country object associated with the given name, or null if not found.
      */
-    public Country getCountry(final String countryName)
+    Country getCountry(final String countryName)
     {
         return countriesMap.get(countryName);
     }
@@ -74,18 +75,17 @@ public class World
      */
     public void loadCountriesFromDirectory(final Path dirPath)
     {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath, FILE_EXTENSION))
+        try(DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath, FILE_EXTENSION))
         {
-            for (Path file : stream)
+            for(final Path file : stream)
             {
                 List<Country> countriesFromFile = parseCountriesFromFile(file);
-                for (Country country : countriesFromFile)
+                for(final Country country : countriesFromFile)
                 {
                     addCountry(country);
                 }
             }
-        }
-        catch (IOException e)
+        } catch(final IOException e)
         {
             System.err.println("Error reading directory: " + e.getMessage());
         }
@@ -102,42 +102,55 @@ public class World
      */
     private List<Country> parseCountriesFromFile(final Path filePath) throws IOException
     {
-        List<Country> countries = new ArrayList<>();
-        BufferedReader reader = Files.newBufferedReader(filePath);
+        final List<Country> countries;
+        final BufferedReader reader;
+
+        countries = new ArrayList<>();
+        reader = Files.newBufferedReader(filePath);
+
 
         String line;
-        while ((line = reader.readLine()) != null)
+        while((line = reader.readLine()) != null)
         {
             line = line.trim();
 
-            if (line.isEmpty())
+            if(line.isEmpty())
             {
                 continue;
             }
 
-            String[] headerParts = line.split(COUNTRY_CAPITAL_SEPARATOR);
-            if (!isValidCountryFormat(headerParts))
+            final String[] headerParts;
+            headerParts = line.split(COUNTRY_CAPITAL_SEPARATOR);
+
+            if(!isValidCountryFormat(headerParts))
             {
                 System.err.println("Invalid country-capital format in file " + filePath + " at line: " + line);
                 continue;
             }
 
-            String countryName = headerParts[World.COUNTRY_NAME_INDEX].trim();
-            String capitalCityName = headerParts[CAPITAL_CITY_NAME_INDEX].trim();
+            final List<String> factsList;
+            final String countryName;
+            final String capitalCityName;
 
-            List<String> factsList = new ArrayList<>();
-            while ((line = reader.readLine()) != null && !line.trim().isEmpty())
+            factsList = new ArrayList<>();
+            countryName = headerParts[World.COUNTRY_NAME_INDEX].trim();
+            capitalCityName = headerParts[CAPITAL_CITY_NAME_INDEX].trim();
+
+
+            while((line = reader.readLine()) != null && !line.trim().isEmpty())
             {
                 factsList.add(line.trim());
             }
 
-            if (factsList.isEmpty())
+            if(factsList.isEmpty())
             {
                 System.err.println("No facts found for country: " + countryName);
                 continue;
             }
 
-            String[] facts = factsList.toArray(new String[ZERO_ARRAY_SIZE]);
+            final String[] facts;
+            facts = factsList.toArray(new String[ZERO_ARRAY_SIZE]);
+
             countries.add(new Country(countryName, capitalCityName, facts));
         }
 
@@ -147,7 +160,7 @@ public class World
 
     /**
      * Validates the format of the country and capital line.
-     * The format should be "CountryName:CapitalCity".
+     * The format should be "CountryName{@value COUNTRY_CAPITAL_SEPARATOR}CapitalCity".
      *
      * @param headerParts The parts of the line split by the colon.
      * @return true if the format is valid, false otherwise.

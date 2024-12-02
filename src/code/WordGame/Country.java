@@ -1,41 +1,13 @@
 package WordGame;
 
-public class Country
-{
-    final String name;
-    final String capitalCityName;
-    final String[] facts;
-
-    public Country (final String name, final String capitalCityName, final String[] facts)
-    {
-        this.name = name;
-        this.capitalCityName = capitalCityName;
-        this.facts = facts;
-    }
-
-    public String getName ()
-    {
-        return name;
-    }
-
-    public String getCapitalCityName ()
-    {
-        return capitalCityName;
-    }
-
-    public String[] getFacts ()
-    {
-        return facts;
-    }
-
-    // Method to display country information
-    public void displayCountryInfo() {
-        System.out.println("Country: " + name);
-        System.out.println("Capital: " + capitalCityName);
-        System.out.println("Facts:");
-        for (String fact : facts) {
-            System.out.println("  - " + fact);
-        }
-    }
-
-}
+/**
+ * Represents a country with its name, capital city, and a set of interesting facts.
+ *
+ * @param name          the name of the country
+ * @param capitalCityName the name of the country's capital city
+ * @param facts         an array of interesting facts about the country
+ *
+ * @author Ben Henry
+ * @version 1.0
+ */
+record Country(String name, String capitalCityName, String[] facts) {}

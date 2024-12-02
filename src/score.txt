@@ -134,3 +134,75 @@ Incorrect answers: 7
 Total Score: 6
 Average Score: 6.00
 
+Date and Time: 2024-11-30 20:59:47
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+
+Date and Time: 2024-12-01 10:50:50
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+
+Date and Time: 2024-12-01 10:51:22
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+
+Date and Time: 2024-12-01 10:51:56
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+
+Date and Time: 2024-12-01 10:53:45
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+
+Date and Time: 2024-12-01 10:57:36
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+
+Date and Time: 2024-12-01 11:00:18
+Total Games Played: 1
+Correct answers on the first attempt: 7
+Correct answers on the second attempt: 1
+Incorrect answers: 2
+Total Score: 15
+Average Score: 15.00
+
+Date and Time: 2024-12-01 11:13:29
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+
+Date and Time: 2024-12-01 14:46:03
+Total Games Played: 1
+Correct answers on the first attempt: 0
+Correct answers on the second attempt: 0
+Incorrect answers: 10
+Total Score: 0
+Average Score: 0.00
+

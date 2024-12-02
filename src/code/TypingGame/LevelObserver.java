@@ -1,5 +1,5 @@
 package TypingGame;
 
-public interface LevelObserver {
-    void updateLevel(int level);
+public abstract class LevelObserver {
+    abstract void updateLevel(int level);
 }

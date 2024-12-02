@@ -11,10 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Score {
+class Score {
 
-    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static final int POINTS_PER_FIRST_ATTEMPT = 2;
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final int POINTS_PER_FIRST_ATTEMPT = 2;
+    private static final int ZERO_GAMES_PLAYED = 0;
+    public static final int EMPTY_SCORE_DATA_LENGTH = 0;
     private final LocalDateTime dateTimePlayed;
     private final int numGamesPlayed;
     private final int numCorrectFirstAttempt;
@@ -24,8 +26,8 @@ public class Score {
     private final double averageScore;
 
     // Constructor to initialize score details
-    public Score(LocalDateTime dateTimePlayed, int numGamesPlayed, int numCorrectFirstAttempt,
-                 int numCorrectSecondAttempt, int numIncorrectTwoAttempts) {
+    Score(final LocalDateTime dateTimePlayed, final int numGamesPlayed, final int numCorrectFirstAttempt,
+                 final int numCorrectSecondAttempt, final int numIncorrectTwoAttempts) {
         this.dateTimePlayed = dateTimePlayed;
         this.numGamesPlayed = numGamesPlayed;
         this.numCorrectFirstAttempt = numCorrectFirstAttempt;
@@ -34,33 +36,31 @@ public class Score {
         // Calculate total score (2 points for first attempts, 1 for second attempts)
         this.totalScore = (numCorrectFirstAttempt * POINTS_PER_FIRST_ATTEMPT) + numCorrectSecondAttempt;
         // Calculate average score
-        this.averageScore = numGamesPlayed > 0 ? (double) totalScore / numGamesPlayed : 0.0;
+        this.averageScore = numGamesPlayed > ZERO_GAMES_PLAYED ? (double) totalScore / numGamesPlayed : ZERO_GAMES_PLAYED;
     }
 
-    public LocalDateTime getDateTimePlayed() {
+    LocalDateTime getDateTimePlayed() {
         return dateTimePlayed;
     }
 
-    public double getAverageScore() {
+    double getAverageScore() {
         return averageScore;
     }
 
-    public int getScore(){
+    int getScore(){
         return totalScore;
     }
 
-    // Method to append a score to the score.txt file
-    static void appendScoreToFile(Score score, String filePathString) {
+    static void appendScoreToFile(final Score score, final String filePathString) {
         Path filePath = Paths.get(filePathString);
         try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             writer.write(score.formatForFile());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("Error writing to score file: " + e.getMessage());
         }
     }
 
-    // Method to load scores from file
-    static List<Score> readScoresFromFile(String filePathString) {
+    static List<Score> readScoresFromFile(final String filePathString) {
         List<Score> scores = new ArrayList<> ();
         Path filePath = Paths.get(filePathString);
 
@@ -68,24 +68,22 @@ public class Score {
             if (Files.exists(filePath)) {
                 List<String> fileLines = Files.readAllLines(filePath);
                 StringBuilder scoreData = new StringBuilder();
-                for (String line : fileLines) {
+                for (final String line : fileLines) {
                     scoreData.append(line).append("\n");
 
                     if (line.isEmpty()) {
-                        // End of one score entry
                         scores.add(Score.getScoreObject (scoreData.toString()));
-                        scoreData.setLength(0); // Reset for next score entry
+                        scoreData.setLength(EMPTY_SCORE_DATA_LENGTH);
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("Error reading score file: " + e.getMessage());
         }
         return scores;
     }
 
-    // Format the score for writing to the file
-    public String formatForFile() {
+    String formatForFile() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         return String.format("""
                         Date and Time: %s
@@ -101,7 +99,7 @@ public class Score {
                 numIncorrectTwoAttempts, totalScore, averageScore);
     }
 
-    // Return the score as a string
+
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
@@ -119,18 +117,18 @@ public class Score {
 
 
 
-    public static Score getScoreObject(final String scoreString) {
+    static Score getScoreObject(final String scoreString) {
 
         final int DATE_TIME_PLAYED_INDEX = 0;
         final int NUM_GAMES_PLAYED_INDEX = 1;
-        final int NUM_CORRECT_FIRST_ATTEMPT_INDEX = POINTS_PER_FIRST_ATTEMPT;
+        final int NUM_CORRECT_FIRST_ATTEMPT_INDEX = 2;
         final int NUM_CORRECT_SECOND_ATTEMPT_INDEX = 3;
         final int NUM_INCORRECT_TWO_ATTEMPTS_INDEX = 4;
         final int EXPECTED_LINES_COUNT = 7;  // The expected number of lines in the score string
         final String SPLIT_DELIMITER_REGEX = ": ";
         final String LINE_BREAK = "\n";
 
-        final int SPLIT_LIMIT = POINTS_PER_FIRST_ATTEMPT;
+        final int SPLIT_LIMIT = 2;
         final int SPLIT_INDEX = 1;
 
         String[] lines = scoreString.split(LINE_BREAK);
@@ -151,7 +149,7 @@ public class Score {
 
             return new Score(dateTimePlayed, numGamesPlayed, numCorrectFirstAttempt, numCorrectSecondAttempt,
                     numIncorrectTwoAttempts);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("Error parsing score entry: " + e.getMessage());
             return null;
         }

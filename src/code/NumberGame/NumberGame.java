@@ -1,6 +1,7 @@
 package NumberGame;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -17,33 +18,32 @@ import javafx.geometry.Pos;
  * @author Ben Henry
  * @version 1.0
  */
-public class NumberGame extends Application {
+public class NumberGame extends Application
+{
 
-    public static final String GAME_OVER_INVALID_PLACEMENT_STATUS_TEXT = "Invalid placement! Game Over.";
-    public static final String STAGE_TITLE_TEXT = "Number Game";
-    public static final String QUIT_BUTTON_TEXT = "Quit";
-    public static final String TRY_AGAIN_BUTTON_TEXT = "Try Again";
-    public static final String INITIAL_SCORE_TEXT = "Successful Placements: 0";
-    public static final String GAME_STATUS_IN_PROGRESS_TEXT = "Game Status: In Progress";
-    public static final String CURRENT_NUMBER_TEXT = "Current number: ";
-    public static final String GAME_OVER_ALERT_TITLE = "Game Over";
-    public static final String YOU_WIN_ALERT_HEADER_TEXT = "You Win!";
-    public static final String YOU_LOSE_ALERT_HEADER_TEXT = "You Lose!";
-    public static final String PLAYER_STAT_ALERT_TEXT_FORMAT = "Placements: %d | Total Placements: %d\nWins: %d | Losses: %d | Avg Placements: %.2f";
-    public static final String GAME_OVER_HEADER_TEXT = "Game Over! Here are your stats:";
+    private static final String GAME_OVER_INVALID_PLACEMENT_STATUS_TEXT = "Invalid placement! Game Over.";
+    private static final String STAGE_TITLE_TEXT = "Number Game";
+    private static final String QUIT_BUTTON_TEXT = "Quit";
+    private static final String TRY_AGAIN_BUTTON_TEXT = "Try Again";
+    private static final String INITIAL_SCORE_TEXT = "Successful Placements: 0";
+    private static final String GAME_STATUS_IN_PROGRESS_TEXT = "Game Status: In Progress";
+    private static final String CURRENT_NUMBER_TEXT = "Current number: ";
+    private static final String GAME_OVER_ALERT_TITLE = "Game Over";
+    private static final String YOU_WIN_ALERT_HEADER_TEXT = "You Win!";
+    private static final String YOU_LOSE_ALERT_HEADER_TEXT = "You Lose!";
+    private static final String PLAYER_STAT_ALERT_TEXT_FORMAT = "Placements: %d | Total Placements: %d" + System.lineSeparator() + "Wins: %d | Losses: %d | Avg Placements: %.2f";
+    private static final String GAME_OVER_HEADER_TEXT = "Game Over! Here are your stats:";
 
-    public static final int SCENE_VBOX_WIDTH = 500;
-    public static final int SCENE_VBOX_HEIGHT = 750;
-    public static final int VBOX_PADDING = 10;
-    public static final int BUTTON_GRID_X_COUNT = 5;
-    public static final int BUTTON_GRID_Y_COUNT = 5;
-    public static final int BUTTON_MIN_WIDTH = 80;
-    public static final int BUTTON_MIN_HEIGHT = 80;
-    public static final int BUTTON_COUNT = 20;
-    public static final int BUTTON_GRID_X_GAP = 10;
-    public static final int BUTTON_GRID_Y_GAP = 10;
+    private static final int SCENE_VBOX_WIDTH = 500;
+    private static final int SCENE_VBOX_HEIGHT = 750;
+    private static final int VBOX_PADDING = 10;
+    private static final int BUTTON_GRID_X_COUNT = 5;
+    private static final int BUTTON_GRID_Y_COUNT = 5;
+    private static final int BUTTON_MIN_WIDTH = 80;
+    private static final int BUTTON_MIN_HEIGHT = 80;
+    private static final int BUTTON_GRID_X_GAP = 10;
+    private static final int BUTTON_GRID_Y_GAP = 10;
 
-    private final Button[] buttons = new Button[BUTTON_COUNT];
     private GameEventHandler gameEventHandler;
     private NumberGameStatsHandler numberGameStatsHandler;
     private Text currentNumberText;
@@ -51,54 +51,93 @@ public class NumberGame extends Application {
     private Text scoreText;
     private Stage primaryStage;
 
+    static final int BUTTON_COUNT = 20;
+    private final Button[] buttons = new Button[BUTTON_COUNT];
+
     /**
      * Initializes the game and UI elements.
      *
      * @param primaryStage the primary stage of the application
      */
     @Override
-    public void start(final Stage primaryStage) {
+    public void start(final Stage primaryStage)
+    {
+
+        Platform.setImplicitExit(false);
         this.primaryStage = primaryStage;
         gameEventHandler = new NumberPlacementGameHandler();
         numberGameStatsHandler = new NumberGameStatsHandler();
 
-        GridPane grid = new GridPane();
+        final GridPane grid;
+        final VBox vbox;
+        final Button tryAgainButton;
+        final Button quitButton;
+        final Scene scene;
+
+
+        grid = new GridPane();
         grid.setHgap(BUTTON_GRID_X_GAP);
         grid.setVgap(BUTTON_GRID_Y_GAP);
         grid.setAlignment(Pos.CENTER);
 
-        for (int i = 0; i < BUTTON_COUNT; i++) {
-            buttons[i] = new Button(" ");
-            buttons[i].setMinSize(BUTTON_MIN_WIDTH, BUTTON_MIN_HEIGHT);
-            int position = i;
-            buttons[i].setOnAction(_ -> handleButtonClick(position));
-            grid.add(buttons[i], i % BUTTON_GRID_X_COUNT, i / BUTTON_GRID_Y_COUNT);
-        }
-
-        VBox vbox = new VBox(VBOX_PADDING);
+        vbox = new VBox(VBOX_PADDING);
         vbox.setAlignment(Pos.CENTER);
+
+        tryAgainButton = new Button(TRY_AGAIN_BUTTON_TEXT);
+        tryAgainButton.setOnAction(_ -> handleTryAgain());
+
+        quitButton = new Button(QUIT_BUTTON_TEXT);
+        quitButton.setOnAction(_ -> handleQuit());
+
+        scene = new Scene(vbox, SCENE_VBOX_WIDTH, SCENE_VBOX_HEIGHT);
 
         currentNumberText = new Text(CURRENT_NUMBER_TEXT + gameEventHandler.currentNumber);
         gameStatusText = new Text(GAME_STATUS_IN_PROGRESS_TEXT);
         scoreText = new Text(INITIAL_SCORE_TEXT);
 
-        vbox.getChildren().addAll(currentNumberText, gameStatusText, scoreText, grid);
+        for(int i = 0; i < BUTTON_COUNT; i++)
+        {
+            final int position = i;
+            buttons[i] = new Button(" ");
+            buttons[i].setMinSize(BUTTON_MIN_WIDTH, BUTTON_MIN_HEIGHT);
+            buttons[i].setOnAction(_ -> handleButtonClick(position));
+            grid.add(buttons[i], i % BUTTON_GRID_X_COUNT, i / BUTTON_GRID_Y_COUNT);
+        }
 
-        Button tryAgainButton = new Button(TRY_AGAIN_BUTTON_TEXT);
-        tryAgainButton.setOnAction(e -> handleTryAgain());
-
-        Button quitButton = new Button(QUIT_BUTTON_TEXT);
-        quitButton.setOnAction(e -> handleQuit());
-
-        vbox.getChildren().addAll(tryAgainButton, quitButton);
+        vbox.getChildren().addAll(currentNumberText, gameStatusText, scoreText, grid, tryAgainButton, quitButton);
 
         gameEventHandler.startGame();
         updateUI();
 
-        Scene scene = new Scene(vbox, SCENE_VBOX_WIDTH, SCENE_VBOX_HEIGHT);
+
         primaryStage.setTitle(STAGE_TITLE_TEXT);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    /**
+     * Returns the formatted score text.
+     *
+     * @return the formatted score string
+     */
+    private String getFormattedScore()
+    {
+        return String.format(PLAYER_STAT_ALERT_TEXT_FORMAT,
+                gameEventHandler.successfulPlacements, numberGameStatsHandler.getTotalPlacements(),
+                numberGameStatsHandler.getTotalWins(), numberGameStatsHandler.getTotalLosses(),
+                numberGameStatsHandler.getAveragePlacements());
+    }
+
+    /**
+     * Checks if the win condition is met.
+     * The win condition is achieved when the number of successful placements
+     * equals the total number of buttons on the grid.
+     *
+     * @return true if the win condition is met, false otherwise
+     */
+    private boolean isWinConditionMet()
+    {
+        return gameEventHandler.successfulPlacements == BUTTON_COUNT;
     }
 
     /**
@@ -106,20 +145,33 @@ public class NumberGame extends Application {
      *
      * @param position the position of the clicked button
      */
-    private void handleButtonClick(final int position) {
-        if (gameEventHandler.validPositions.contains(position)) {
+    private void handleButtonClick(final int position)
+    {
+        if(gameEventHandler.validPositions.contains(position))
+        {
             buttons[position].setText(String.valueOf(gameEventHandler.currentNumber));
             gameEventHandler.placeNumberOnGrid(position);
+
+            if(isWinConditionMet())
+            {
+                numberGameStatsHandler.recordWin(gameEventHandler.successfulPlacements);
+                updateUI();
+                showResultAlert(true); // Show win alert
+                return;
+            }
 
             gameEventHandler.generateNextNumber();
             updateUI();
 
-            if (gameEventHandler.checkGameOver()) {
+            if(gameEventHandler.checkGameOver())
+            {
                 numberGameStatsHandler.recordLoss(gameEventHandler.successfulPlacements);
                 updateUI();
                 showResultAlert(false);
             }
-        } else {
+        }
+        else
+        {
             gameStatusText.setText(GAME_OVER_INVALID_PLACEMENT_STATUS_TEXT);
             numberGameStatsHandler.recordLoss(gameEventHandler.successfulPlacements);
             updateUI();
@@ -127,28 +179,30 @@ public class NumberGame extends Application {
         }
     }
 
+
+    /**
+     * Creates and displays an alert with the specified title, header, and player's stats.
+     *
+     * @param title  the title of the alert
+     * @param header the header text of the alert
+     */
+    private void showAlertWithStats(final String title, final String header)
+    {
+        final Alert alert = getAlert(title, header);
+        alert.showAndWait();
+    }
+
     /**
      * Displays the result alert (win or loss) along with the player's stats.
+     * Provides options to try again or quit the game.
      *
      * @param won true if the player won, false if the player lost
      */
     private void showResultAlert(final boolean won) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(GAME_OVER_ALERT_TITLE);
+        final Alert alert = getAlert(GAME_OVER_ALERT_TITLE, won ? YOU_WIN_ALERT_HEADER_TEXT : YOU_LOSE_ALERT_HEADER_TEXT);
 
-        if (won) {
-            alert.setHeaderText(YOU_WIN_ALERT_HEADER_TEXT);
-        } else {
-            alert.setHeaderText(YOU_LOSE_ALERT_HEADER_TEXT);
-        }
-
-        alert.setContentText(String.format(PLAYER_STAT_ALERT_TEXT_FORMAT,
-                gameEventHandler.successfulPlacements, numberGameStatsHandler.getTotalPlacements(),
-                numberGameStatsHandler.getTotalWins(), numberGameStatsHandler.getTotalLosses(),
-                numberGameStatsHandler.getAveragePlacements()));
-
-        ButtonType tryAgainButton = new ButtonType(TRY_AGAIN_BUTTON_TEXT);
-        ButtonType quitButton = new ButtonType(QUIT_BUTTON_TEXT);
+        final ButtonType tryAgainButton = new ButtonType(TRY_AGAIN_BUTTON_TEXT);
+        final ButtonType quitButton = new ButtonType(QUIT_BUTTON_TEXT);
 
         alert.getButtonTypes().setAll(tryAgainButton, quitButton);
 
@@ -156,18 +210,50 @@ public class NumberGame extends Application {
             if (response == tryAgainButton) {
                 handleTryAgain();
             } else if (response == quitButton) {
-                primaryStage.close();
+                primaryStage.hide();
             }
         });
     }
 
     /**
+     * Creates an alert with the specified title and header text,
+     * and populates it with the player's game statistics.
+     *
+     * @param title  the title of the alert
+     * @param header the header text of the alert
+     * @return the configured Alert instance
+     */
+    private Alert getAlert(final String title, final String header)
+    {
+        final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(String.format(PLAYER_STAT_ALERT_TEXT_FORMAT,
+                gameEventHandler.successfulPlacements, numberGameStatsHandler.getTotalPlacements(),
+                numberGameStatsHandler.getTotalWins(), numberGameStatsHandler.getTotalLosses(),
+                numberGameStatsHandler.getAveragePlacements()));
+        return alert;
+    }
+
+
+    /**
+     * Displays an alert with the current game statistics.
+     */
+    private void showStatsAlert()
+    {
+        showAlertWithStats(GAME_OVER_ALERT_TITLE, GAME_OVER_HEADER_TEXT);
+    }
+
+
+    /**
      * Resets the game and the UI for a new round.
      */
-    private void handleTryAgain() {
+    private void handleTryAgain()
+    {
         gameEventHandler.resetGame();
 
-        for (final Button button : buttons) {
+        for(final Button button : buttons)
+        {
             button.setText(" ");
         }
 
@@ -176,47 +262,23 @@ public class NumberGame extends Application {
         updateUI();
     }
 
-    /**
-     * Handles the quit action, showing the stats alert before closing the game.
-     */
-    private void handleQuit() {
-        showStatsAlert();
-        primaryStage.close();
-    }
-
-    /**
-     * Displays an alert with the current game statistics.
-     */
-    private void showStatsAlert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(GAME_OVER_ALERT_TITLE);
-        alert.setHeaderText(GAME_OVER_HEADER_TEXT);
-
-        alert.setContentText(String.format(PLAYER_STAT_ALERT_TEXT_FORMAT,
-                gameEventHandler.successfulPlacements, numberGameStatsHandler.getTotalPlacements(),
-                numberGameStatsHandler.getTotalWins(), numberGameStatsHandler.getTotalLosses(),
-                numberGameStatsHandler.getAveragePlacements()));
-
-        alert.showAndWait();
-    }
 
     /**
      * Updates the UI elements (current number, game status, and score).
      */
-    private void updateUI() {
+    private void updateUI()
+    {
         currentNumberText.setText(CURRENT_NUMBER_TEXT + gameEventHandler.currentNumber);
         scoreText.setText(getFormattedScore());
     }
 
     /**
-     * Returns the formatted score text.
-     *
-     * @return the formatted score string
+     * Handles the quit action, showing the stats alert before closing the game.
      */
-    private String getFormattedScore() {
-        return String.format(PLAYER_STAT_ALERT_TEXT_FORMAT,
-                gameEventHandler.successfulPlacements, numberGameStatsHandler.getTotalPlacements(),
-                numberGameStatsHandler.getTotalWins(), numberGameStatsHandler.getTotalLosses(),
-                numberGameStatsHandler.getAveragePlacements());
+    private void handleQuit()
+    {
+        showStatsAlert();
+        primaryStage.hide();
     }
+
 }

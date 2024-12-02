@@ -4,7 +4,9 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
-public class EnemyLoader {
+public class EnemyLoader extends LevelObserver
+{
+    private static int currentLevel = 1;  // Static level tracker
 
     // Load enemies from the enemies.txt file in the resources folder
     public static List<Enemy> loadEnemies() throws IOException {
@@ -23,13 +25,20 @@ public class EnemyLoader {
                     String imageLocation = parts[1].trim();  // Full path to image in resources
                     int health = Integer.parseInt(parts[2].trim());  // Health value
 
-
-                    // Create and add the new TypingGame.Enemy to the list
                     enemies.add(new Enemy(name, health, imageLocation));
                 }
             }
         }
 
+
+
         return enemies;
+    }
+
+    // Update the current level based on the game level
+    @Override
+    public void updateLevel(final int level) {
+        System.out.println("Current Level: " + currentLevel);
+        currentLevel = level;  // Set the currentLevel to the observed level
     }
 }
