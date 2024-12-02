@@ -1,6 +1,5 @@
 package TypingGame;
 
-import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -19,75 +18,96 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 public class TypingGameGUI extends Application
 {
 
-    // Layout
-    public static final int VBOX_SPACING = 10;
-    public static final String ENEMY_VBOX_STYLE = "-fx-margin: 20px;";
-    public static final double PLAYER_VBOX_HEIGHT_FACTOR = 0.2;
-    public static final int GENERIC_FONT_SIZE = 24;
-    public static final int DEFAULT_SCENE_HEIGHT_PX = 900;
-    public static final int ENEMY_IMAGE_WIDTH = 250;
-    public static final int ENEMY_IMAGE_HEIGHT = 250;
-    public static final String INITIAL_ENEMY_INFO_TEXT = "";
-    public static final int DEFAULT_SCENE_WIDTH_PX = 600;
-    public static final int BOSS_LEVEL = 10;
-    public static final String BOSS_NAME = "Dog.reverse()";
-    public static final int BOSS_HP_SCALE_FACTOR = 50000;
-    public static final String BOSS_IMAGE_LOCATION = "images/dog.reverse().png";
-    private BackgroundImageController backgroundImageController;
+    private static final int VBOX_SPACING = 10;
+    private static final String ENEMY_VBOX_STYLE = "-fx-margin: 20px;";
+    private static final double PLAYER_VBOX_HEIGHT_FACTOR = 0.2;
 
-    private PauseTransition wordTimer; // Timer for word input
-    private static final double BASE_TIME_PER_LETTER = 1.2; // Base time in seconds per letter
-    private static final double SCALING_FACTOR = 0.1; // Decreases time per letter as level increases
+
+    private static final int DEFAULT_SCENE_HEIGHT_PX = 900;
+    private static final int DEFAULT_SCENE_WIDTH_PX = 600;
+
+
+    private static final int ENEMY_IMAGE_WIDTH = 250;
+    private static final int ENEMY_IMAGE_HEIGHT = 250;
+    private static final String INITIAL_ENEMY_INFO_TEXT = "";
+    private static final int BOSS_LEVEL = 10;
+    private static final String BOSS_NAME = "Dog.reverse()";
+    private static final int BOSS_HP_SCALE_FACTOR = 50000;
+    private static final String BOSS_IMAGE_LOCATION = "images/dog.reverse().png";
+    private static final int BOSS_FIGHT_IMAGE_FIT_WIDTH = 600;
+    private static final int BOSS_FIGHT_IMAGE_FIT_HEIGHT = 600;
+    public static final String STAGE_TITLE = "Typing Game";
+    private boolean bossFight = false;
+
+
+    private static final int WORD_TO_TYPE_INITIAL_Y_COORD = 0;
+    private static final int WORD_TO_TYPE_FIRST_CHAR_INDEX = 0;
+    private static final int HOW_MANY_CHARACTERS_TO_CHECK = 1;
+    private static final double BASE_TIME_PER_LETTER = 1.2;
+    private static final double SCALING_FACTOR = 0.1;
     private static final double MIN_TIME_PER_LETTER = 0.3;
+    private static final int WORD_TO_TYPE_INITIAL_Y_POS = 0;
     private TranslateTransition wordMovementAnimation;
+    private PauseTransition wordTimer;
 
 
-
-    // Health Bars
-    public static final int HEALTH_BAR_HEIGHT = 30;
-    public static final int HEALTH_BAR_WIDTH = 500;
-    public static final int HEALTH_BAR_MARGIN = 25;
-    public static final double PROGRESS_BAR_MAX_PERCENT = 100.0;
-    public static final double INITIAL_HEALTH_BAR_VALUE = 1.0;
-    public static final String PLAYER_HEALTH_BAR_STYLE = "-fx-accent: green;";
-    public static final String ENEMY_HEALTH_BAR_STYLE = "-fx-accent: red;";
+    private static final int HEALTH_BAR_HEIGHT = 30;
+    private static final int HEALTH_BAR_WIDTH = 500;
+    private static final int HEALTH_BAR_MARGIN = 25;
+    private static final double PROGRESS_BAR_MAX_PERCENT = 100.0;
+    private static final double INITIAL_HEALTH_BAR_VALUE = 1.0;
+    private static final String PLAYER_HEALTH_BAR_STYLE = "-fx-accent: green;";
+    private static final String ENEMY_HEALTH_BAR_STYLE = "-fx-accent: red;";
     private HealthBar enemyHealthBar;
     private HealthBar playerHealthBar;
 
-    // Text and input variables
-    public static final int CHARACTER_INPUT_PREF_WIDTH = 45;
-    public static final int CHARACTER_INPUT_MAX_WIDTH = 45;
-    public static final String CHARACTER_INPUT_PROMPT_TEXT = "_";
-    public static final String CHARACTER_INPUT_STYLE = "-fx-background-color: rgba(169, 169, 169, 0.5); -fx-border-width: 0 0 2px 0; -fx-border-color: black; -fx-font-size: 14px;";
-    public static final String ENEMY_TEXT_STYLE = "-fx-effect: dropshadow(three-pass-box, white, 1, 1, 0, 0); -fx-background-color: rgba(169, 169, 169, 0.5); -fx-font-size: 30px;";
-    public static final String WORD_TO_ENTER_TEXT_STYLE = "-fx-effect: dropshadow(three-pass-box, white, 1, 1, 0, 0); -fx-background-color: rgba(169, 169, 169, 0.5); -fx-font-size: 20px;";
+
+    private static final int CHARACTER_INPUT_PREF_WIDTH = 45;
+    private static final int CHARACTER_INPUT_MAX_WIDTH = 45;
+    private static final String CHARACTER_INPUT_PROMPT_TEXT = "_";
+    private static final String CHARACTER_INPUT_STYLE = "-fx-background-color: rgba(169, 169, 169, 0.5); -fx-border-width: 0 0 2px 0; -fx-border-color: black; -fx-font-size: 14px;";
+    private static final String ENEMY_TEXT_STYLE = "-fx-effect: dropshadow(three-pass-box, white, 1, 1, 0, 0); -fx-background-color: rgba(169, 169, 169, 0.5); -fx-font-size: 30px;";
+    private static final String WORD_TO_ENTER_TEXT_STYLE = "-fx-effect: dropshadow(three-pass-box, white, 1, 1, 0, 0); -fx-background-color: rgba(169, 169, 169, 0.5); -fx-font-size: 20px;";
     private TextField[] textFields;
     private Text enemyInfoText;
     private Text wordToTypeText;
 
-    // Gameplay elements
-    public static final int PLAYER_DAMAGE_AMOUNT = 500;
-    private int playerHealth = 100;
+
+    private static final int PLAYER_DAMAGE_AMOUNT = 500;
+    private static final int PLAYER_STARTING_HEALTH = 100;
+    private static final int FIRST_ENEMY_INDEX = 0;
+    private static final int BOSS_INDEX_LOCATION_ADJUSTER = 1;
+    private static Player player;
     private List<String> javaTerms;
     private List<Enemy> enemies;
     private int currentEnemyIndex;
     private String currentWord;
     private GameLevel gameLevel;
     private Stage primaryStage;
-    private boolean bossFight = false; // Tracks if the boss fight has started
 
 
-    public static final int ZEROTH_INDEX = 0;
+    private static final Path FONT_PATH = Paths.get("src", "resources", "fonts", "joystix.otf");
+    private static final int GENERIC_FONT_SIZE = 24;
+
+
+    private BackgroundImageController backgroundImageController;
+
+    private static final int PAUSE_DURATION = 1;
+
+    private static final int ZEROTH_INDEX = 0;
+
 
     VBox root;
     Image backgroundImage;
     BackgroundImage bgImage;
+
 
     VBox enemyBox;
     VBox gameBox;
@@ -96,14 +116,17 @@ public class TypingGameGUI extends Application
 
     /**
      * Sets up the main game scene, loading fonts, background, and UI components.
+     *
      * @param primaryStage The primary stage for this application.
      */
     @Override
-    public void start(Stage primaryStage)
+    public void start(final Stage primaryStage)
     {
 
         Platform.setImplicitExit(false);
         this.primaryStage = primaryStage;
+
+        player = new Player(PLAYER_STARTING_HEALTH, PLAYER_DAMAGE_AMOUNT);
 
         root = new VBox(VBOX_SPACING);
         backgroundImageController = new BackgroundImageController();
@@ -114,7 +137,7 @@ public class TypingGameGUI extends Application
         final String fontPath;
         final Font customFont;
 
-        fontPath = Paths.get("src", "resources", "fonts", "joystix.otf").toUri().toString();
+        fontPath = FONT_PATH.toUri().toString();
         customFont = Font.loadFont(fontPath, GENERIC_FONT_SIZE);
         root.setStyle("-fx-font-family: '" + customFont.getName() + "';");
 
@@ -127,7 +150,7 @@ public class TypingGameGUI extends Application
 
         loadEnemies();
 
-        for(Enemy enemy : enemies)
+        for(final Enemy enemy : enemies)
         {
             gameLevel.addObserver(enemy);
         }
@@ -140,9 +163,10 @@ public class TypingGameGUI extends Application
 
         playerBox.getChildren().add(textEntryBox);
 
-        playerHealthBar = new HealthBar(100 / PROGRESS_BAR_MAX_PERCENT,
+        playerHealthBar = new HealthBar(INITIAL_HEALTH_BAR_VALUE,
                 PLAYER_HEALTH_BAR_STYLE, HEALTH_BAR_HEIGHT,
                 HEALTH_BAR_WIDTH, HEALTH_BAR_MARGIN);
+
         playerHealthBar.setupHealthBar(playerBox);
 
         root.getChildren().addAll(enemyBox, gameBox);
@@ -154,11 +178,11 @@ public class TypingGameGUI extends Application
         playerBox.setPrefHeight(PLAYER_VBOX_HEIGHT_FACTOR * DEFAULT_SCENE_HEIGHT_PX);
 
         Scene scene = new Scene(root, DEFAULT_SCENE_WIDTH_PX, DEFAULT_SCENE_HEIGHT_PX);
-        primaryStage.setTitle("Typing Game");
+        primaryStage.setTitle(STAGE_TITLE);
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        primaryStage.setOnCloseRequest(event -> stopTimer());
+        primaryStage.setOnCloseRequest(_ -> stopTimer());
 
         startGame();
     }
@@ -173,9 +197,6 @@ public class TypingGameGUI extends Application
     }
 
 
-
-    //Game Setup Methods
-
     /**
      * Loads the enemy data from a file.
      * The enemies are loaded into the game from a pre-defined data source.
@@ -185,7 +206,8 @@ public class TypingGameGUI extends Application
         try
         {
             enemies = EnemyLoader.loadEnemies();
-        } catch(IOException e)
+        }
+        catch(final IOException e)
         {
             System.err.println("Failed to load enemies. Please check the enemies data file or path.");
             e.printStackTrace();
@@ -201,8 +223,12 @@ public class TypingGameGUI extends Application
     {
         try
         {
-            javaTerms = WordLoader.loadWords("src/resources/terms.txt");  // Load words from the file
-        } catch(IOException e)
+            Path termsPath;
+            termsPath = Path.of("src", "resources", "terms.txt");
+
+            javaTerms = WordLoader.loadWords(termsPath);
+        }
+        catch(final IOException e)
         {
             System.err.println("Error loading words from file");
             e.printStackTrace();
@@ -243,7 +269,6 @@ public class TypingGameGUI extends Application
     }
 
 
-    //UI Methods
     /**
      * Creates and configures the text fields for the current word.
      * Each text field allows the player to type one character of the word.
@@ -252,22 +277,24 @@ public class TypingGameGUI extends Application
     {
         for(int i = ZEROTH_INDEX; i < currentWord.length(); i++)
         {
-            TextField textField = getTextField(i);
+            final TextField textField;
+            textField = getTextField(i);
 
-            textFields[i] = textField;  // Store the text field in the array
+            textFields[i] = textField;
             textField.setOnKeyPressed(event -> {
                 if(event.getCode() == KeyCode.TAB)
                 {
                     textField.requestFocus();
                 }
             });
-            textEntryBox.getChildren().add(textField);  // Add it to the layout
+            textEntryBox.getChildren().add(textField);
         }
     }
 
 
     /**
      * Returns a new text field configured for the given index.
+     *
      * @param i The index of the current word.
      * @return The newly created TextField.
      */
@@ -305,36 +332,35 @@ public class TypingGameGUI extends Application
     }
 
 
-
-    //Game Methods
     /**
      * Moves to the next enemy or triggers a boss fight if the current level is the boss level.
      * If the player has defeated the current enemy, the method proceeds to the next enemy in the list.
      * If all enemies are defeated, the index is reset to 0. If the boss level is reached, a new boss enemy is created and added to the list.
      * Updates the game level and the enemy display after each transition.
      */
-    private void nextEnemy() {
-        if (bossFight && enemies.get(currentEnemyIndex).isDefeated())
+    private void nextEnemy()
+    {
+        if(bossFight && enemies.get(currentEnemyIndex).isDefeated())
         {
-            gameOver(true); // Victory
+            gameOver(true);
             return;
         }
 
-        currentEnemyIndex++; // Move to the next enemy
-        gameLevel.nextLevel(); // Move to the next level
+        currentEnemyIndex++;
+        gameLevel.nextLevel();
 
-        if (gameLevel.getCurrentLevel() == BOSS_LEVEL) {
+        if(gameLevel.getCurrentLevel() == BOSS_LEVEL)
+        {
             Enemy boss = new Enemy(BOSS_NAME, PLAYER_DAMAGE_AMOUNT * BOSS_HP_SCALE_FACTOR, BOSS_IMAGE_LOCATION);
-            bossFight=true;
-            enemies.add(boss);  // Add boss as the last enemy
+            bossFight = true;
+            enemies.add(boss);
         }
 
-        // Check if we have defeated all enemies in the current level
-        if (currentEnemyIndex >= enemies.size()) {
-            currentEnemyIndex = 0;
+        if(currentEnemyIndex >= enemies.size())
+        {
+            currentEnemyIndex = FIRST_ENEMY_INDEX;
         }
 
-        // Update the enemy display
         updateBackground();
         updateEnemyDisplay(bossFight);
     }
@@ -346,33 +372,35 @@ public class TypingGameGUI extends Application
      *
      * @param isBossFight Boolean indicating whether the current fight is a boss fight.
      */
-    private void updateEnemyDisplay(boolean isBossFight)
+    private void updateEnemyDisplay(final boolean isBossFight)
     {
         if(enemies == null || enemies.isEmpty())
         {
             return;
         }
 
-        Enemy currentEnemy = enemies.get(currentEnemyIndex);
+        final Enemy currentEnemy;
+        final Image enemyImage;
+        final ImageView enemyImageView;
 
-        Image enemyImage = new Image(currentEnemy.getImageLocation());
-        ImageView enemyImageView = new ImageView(enemyImage);
+        currentEnemy = enemies.get(currentEnemyIndex);
+        enemyImage = new Image(currentEnemy.getImageLocation());
+        enemyImageView = new ImageView(enemyImage);
+
+
         enemyImageView.setFitWidth(ENEMY_IMAGE_WIDTH);
         enemyImageView.setFitHeight(ENEMY_IMAGE_HEIGHT);
 
-        if(isBossFight){
-            System.out.println("TESTT");
-            enemyImageView.setFitWidth(600);
-            enemyImageView.setFitHeight(600);
-
-
+        if(isBossFight)
+        {
+            enemyImageView.setFitWidth(BOSS_FIGHT_IMAGE_FIT_WIDTH);
+            enemyImageView.setFitHeight(BOSS_FIGHT_IMAGE_FIT_HEIGHT);
         }
 
-        // Update the enemy health bar and name for the current enemy
         enemyHealthBar.updateHealth(currentEnemy.getHealth() / PROGRESS_BAR_MAX_PERCENT);
         enemyInfoText.setText(currentEnemy.getName());
 
-        // Clear any previous enemy image and display the new one
+
         if(!enemyBox.getChildren().isEmpty())
         {
             enemyBox.getChildren().removeIf(node -> node instanceof ImageView);
@@ -388,7 +416,8 @@ public class TypingGameGUI extends Application
      */
     private void startWordTimer()
     {
-        if (wordTimer != null) {
+        if(wordTimer != null)
+        {
             wordTimer.stop();
         }
 
@@ -398,10 +427,10 @@ public class TypingGameGUI extends Application
         );
 
         wordTimer = new PauseTransition(Duration.seconds(timeLimit));
-        wordTimer.setOnFinished(event -> handleTimerExpiration());
+        wordTimer.setOnFinished(_ -> handleTimerExpiration());
         wordTimer.play();
 
-        startWordMovementAnimation(timeLimit); // Start the word movement animation
+        startWordMovementAnimation(timeLimit);
     }
 
 
@@ -410,7 +439,7 @@ public class TypingGameGUI extends Application
         if(wordTimer != null)
         {
             wordTimer.stop();
-            wordMovementAnimation.stop(); // Stop the animation
+            wordMovementAnimation.stop();
         }
     }
 
@@ -420,17 +449,18 @@ public class TypingGameGUI extends Application
      *
      * @param timeLimit The time limit in seconds for the animation based on the word length and game level.
      */
-    private void startWordMovementAnimation(double timeLimit)
+    private void startWordMovementAnimation(final double timeLimit)
     {
-        if (wordMovementAnimation != null) {
-            wordMovementAnimation.stop(); // Stop any existing animation
+        if(wordMovementAnimation != null)
+        {
+            wordMovementAnimation.stop();
         }
 
         wordMovementAnimation = new TranslateTransition(Duration.seconds(timeLimit), wordToTypeText);
-        wordMovementAnimation.setFromY(0); // Start at the top of the VBox
-        wordMovementAnimation.setToY(gameBox.getHeight() - wordToTypeText.getBoundsInParent().getHeight()); // Move to the bottom
-        wordMovementAnimation.setInterpolator(javafx.animation.Interpolator.LINEAR); // Smooth movement
-        wordMovementAnimation.setOnFinished(event -> handleTimerExpiration()); // Handle when animation finishes
+        wordMovementAnimation.setFromY(WORD_TO_TYPE_INITIAL_Y_POS);
+        wordMovementAnimation.setToY(gameBox.getHeight() - wordToTypeText.getBoundsInParent().getHeight());
+        wordMovementAnimation.setInterpolator(javafx.animation.Interpolator.LINEAR);
+        wordMovementAnimation.setOnFinished(_ -> handleTimerExpiration());
         wordMovementAnimation.play();
     }
 
@@ -442,13 +472,16 @@ public class TypingGameGUI extends Application
      */
     private void handleTimerExpiration()
     {
-        final Enemy currentEnemy = enemies.get(currentEnemyIndex);
+        final Enemy currentEnemy;
+        currentEnemy = enemies.get(currentEnemyIndex);
 
-        playerHealth -= currentEnemy.getDamage();
-        playerHealthBar.updateHealth(playerHealth / PROGRESS_BAR_MAX_PERCENT);
+        player.takeDamage(currentEnemy.getDamage());
+        playerHealthBar.updateHealth(player.getHealthPercentage());
 
-        if (playerHealth <= 0) {
-            gameOver(false); // Trigger game over for losing
+
+        if(player.isDefeated())
+        {
+            gameOver(false);
             return;
         }
 
@@ -456,6 +489,8 @@ public class TypingGameGUI extends Application
         wordToTypeText.setText(currentWord);
         resetTextFieldsForNewWord();
         clearTextFields();
+
+
     }
 
     /**
@@ -465,21 +500,17 @@ public class TypingGameGUI extends Application
      */
     private void resetTextFieldsForNewWord()
     {
-        // Clear any existing text fields in the layout
         textEntryBox.getChildren().clear();
 
-        // Reinitialize the textFields array based on the new word length
         textFields = new TextField[currentWord.length()];
 
-        // Create new text fields for the new word and add them to the layout
         createTextFields();
 
-        // Enable text fields and reset the text (clear previous entries if any)
         setTextFieldsDisabled(false);
         clearTextFields();
-        wordToTypeText.setTranslateY(0); // Reset position to the top
+        wordToTypeText.setTranslateY(WORD_TO_TYPE_INITIAL_Y_COORD);
 
-        textFields[0].requestFocus();
+        textFields[WORD_TO_TYPE_FIRST_CHAR_INDEX].requestFocus();
         startWordTimer();
     }
 
@@ -505,13 +536,19 @@ public class TypingGameGUI extends Application
      */
     private void handleCharacterInput(final int index)
     {
-        final String typedChar = textFields[index].getText();
-        final Enemy currentEnemy = enemies.get(currentEnemyIndex);
+        final String typedChar;
+        final Enemy currentEnemy;
 
-        if(typedChar.length() == 1)
+        typedChar = textFields[index].getText();
+        currentEnemy = enemies.get(currentEnemyIndex);
+
+        if(typedChar.length() == HOW_MANY_CHARACTERS_TO_CHECK)
         {
-            final char typedLetter = Character.toLowerCase(typedChar.charAt(ZEROTH_INDEX));
-            final char correctLetter = Character.toLowerCase(currentWord.charAt(index));
+            final char typedLetter;
+            final char correctLetter;
+
+            typedLetter = Character.toLowerCase(typedChar.charAt(ZEROTH_INDEX));
+            correctLetter = Character.toLowerCase(currentWord.charAt(index));
 
             if(typedLetter == correctLetter && index < currentWord.length() - 1)
             {
@@ -522,23 +559,21 @@ public class TypingGameGUI extends Application
             {
                 stopTimer();
                 setTextFieldsDisabled(true);
-                playerHealth -= currentEnemy.getDamage();
-                playerHealthBar.updateHealth(playerHealth / PROGRESS_BAR_MAX_PERCENT);
+                player.takeDamage(currentEnemy.getDamage());
+                playerHealthBar.updateHealth(player.getHealthPercentage());
             }
 
             if(isWordCompleted())
             {
                 stopTimer();
                 setTextFieldsDisabled(true);
-                currentEnemy.takeDamage(PLAYER_DAMAGE_AMOUNT);
+                currentEnemy.takeDamage(player.getDamageAmount());
                 if(currentEnemy.isDefeated())
                 {
-                    System.out.println("DEFEATED TEST");
                     nextEnemy();
                 }
 
-                double healthPercentage = (double) currentEnemy.getHealth() / currentEnemy.getMaxHealth();
-                enemyHealthBar.updateHealth(healthPercentage);
+                enemyHealthBar.updateHealth(player.getHealthPercentage());
 
 
             }
@@ -547,14 +582,13 @@ public class TypingGameGUI extends Application
             pause.play();
         }
 
-        // Check for game over
-        if(playerHealth <= 0)
+        if(player.isDefeated())
         {
-            gameOver(false);  // Player lost
+            gameOver(false);
         }
-        else if(isBossFight() && currentEnemy.isDefeated())  // Boss defeated
+        else if(isBossFight() && currentEnemy.isDefeated())
         {
-            gameOver(true);   // Player won
+            gameOver(true);
         }
     }
 
@@ -569,21 +603,23 @@ public class TypingGameGUI extends Application
     {
         stopTimer();
         final String message;
-        if (isVictory) {
+        if(isVictory)
+        {
             message = "Congratulations! You defeated the Boss and won the game!";
-        } else {
+        }
+        else
+        {
             message = "You were slain on level " + gameLevel.getCurrentLevel() + " by " + enemies.get(currentEnemyIndex).getName() + ".";
         }
 
-        // Run the alert on the JavaFX application thread after layout and animation are finished
         Platform.runLater(() -> {
-            final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            final Alert alert;
+            alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(isVictory ? "Victory" : "Defeat");
             alert.setHeaderText(isVictory ? "You Win!" : "Game Over");
             alert.setContentText(message);
             alert.showAndWait();
 
-            // Hide the stage after alert is closed
             primaryStage.hide();
         });
     }
@@ -592,13 +628,14 @@ public class TypingGameGUI extends Application
      * Returns a pause transition for handling incorrect character input or word completion.
      * The pause is used to reset the word, text fields, and start the next word timer after a delay.
      *
-     * @param typedLetter The letter typed by the player.
+     * @param typedLetter   The letter typed by the player.
      * @param correctLetter The correct letter expected for the current position in the word.
      * @return A PauseTransition that delays the resetting of the word and text fields.
      */
     private PauseTransition getPause(final char typedLetter, final char correctLetter)
     {
-        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        final PauseTransition pause;
+        pause = new PauseTransition(Duration.seconds(PAUSE_DURATION));
         pause.setOnFinished(_ -> {
             if(typedLetter != correctLetter || isWordCompleted())
             {
@@ -619,8 +656,9 @@ public class TypingGameGUI extends Application
      *
      * @return Boolean indicating whether the current fight is a boss fight.
      */
-    private boolean isBossFight() {
-        return currentEnemyIndex == enemies.size() - 1;  // Last enemy is the boss
+    private boolean isBossFight()
+    {
+        return currentEnemyIndex == enemies.size() - BOSS_INDEX_LOCATION_ADJUSTER;
     }
 
     /**
@@ -628,9 +666,9 @@ public class TypingGameGUI extends Application
      *
      * @param disabled Boolean indicating whether the text fields should be disabled (true) or enabled (false).
      */
-    private void setTextFieldsDisabled(boolean disabled)
+    private void setTextFieldsDisabled(final boolean disabled)
     {
-        for(TextField textField : textFields)
+        for(final TextField textField : textFields)
         {
             textField.setDisable(disabled);
         }

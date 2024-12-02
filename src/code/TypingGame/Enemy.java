@@ -1,64 +1,63 @@
 package TypingGame;
 
-public class Enemy extends LevelObserver {
+/**
+ * Represents an enemy in the Typing Game.
+ * Each enemy has a name, an image, and inflicts damage on the player.
+ *
+ * @author Ben Henry
+ * @version 1.0
+ */
+class Enemy extends DamageableThing implements LevelObserver
+{
+    private static final int INITIAL_HEALTH_MODIFIER = 1;
     private static final int BASE_DAMAGE = 10;
-    private String name;
-    private int maxHealth;
-    private int health;
-    private String imageLocation;
-    private int damage;
 
-    public Enemy(String name, int maxHealth, String imageLocation) {
+    static final double HEALTH_LEVEL_MODIFIER = 0.1;
+
+    private final String name;
+    private final String imageLocation;
+    private final int damage;
+
+    /**
+     * Constructs an enemy with a name, maximum health, and an image location.
+     *
+     * @param name          The name of the enemy.
+     * @param maxHealth     The initial maximum health of the enemy.
+     * @param imageLocation The file path to the enemy's image.
+     */
+    Enemy(final String name, final int maxHealth, final String imageLocation)
+    {
+        super(maxHealth);
         this.name = name;
-        this.maxHealth = maxHealth;
-        this.health = maxHealth;
         this.imageLocation = imageLocation;
         this.damage = BASE_DAMAGE;
     }
 
-    public void takeDamage(int damage) {
-        this.health -= damage;
-        if (this.health < 0) {
-            this.health = 0;
-        }
-    }
-
-    public boolean isDefeated() {
-        return this.health <= 0;
-    }
-
-    public double getHealthPercentage() {
-        return (double) this.health / this.maxHealth;
-    }
-
+    /**
+     * Updates the enemy's maximum health based on the current game level.
+     * Resets the health to the new maximum value.
+     *
+     * @param level The current game level.
+     */
     @Override
-    public void updateLevel(int level) {
-        maxHealth *= (1 + level * 0.1);
-        health = maxHealth;  // Reset health to max whenever level is updated
+    public void updateLevel(final int level)
+    {
+        int newMaxHealth = (int) (getMaxHealth() * (INITIAL_HEALTH_MODIFIER + level * HEALTH_LEVEL_MODIFIER));
+        setMaxHealth(newMaxHealth, true); // Reset health to the new max
     }
 
-    // Reset health after each encounter
-    public void resetHealth() {
-        this.health = maxHealth;
-    }
-
-    public String getImageLocation() {
+    String getImageLocation()
+    {
         return imageLocation;
     }
 
-    public String getName() {
+    String getName()
+    {
         return name;
     }
 
-    public int getHealth() {
-        return health;
-    }
-
-    public int getMaxHealth() {
-        return maxHealth;
-    }
-
-    public int getDamage() {
+    int getDamage()
+    {
         return damage;
     }
 }

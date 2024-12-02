@@ -4,43 +4,64 @@ import javafx.geometry.Insets;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 
-public class HealthBar {
-    private ProgressBar progressBar;
-    private VBox container;
-    private String style;
-    private int height;
-    private int width;
-    private int margin;
+/**
+ * Represents a customizable health bar that visually displays health as a progress bar.
+ * It can be styled and updated dynamically during the game.
+ *
+ * @author Ben Henry
+ * @version 1.0
+ */
+class HealthBar
+{
+    private final ProgressBar progressBar;
+    private final int margin;
 
-    // Constructor to initialize the health bar
-    public HealthBar(double initialValue, String style, int height, int width, int margin) {
-        this.style = style;
-        this.height = height;
-        this.width = width;
+    /**
+     * Constructs a new HealthBar with specified properties.
+     *
+     * @param initialValue The initial health value as a percentage (0.0 to 1.0).
+     * @param style        The CSS style string for the health bar.
+     * @param height       The height of the health bar in pixels.
+     * @param width        The width of the health bar in pixels.
+     * @param margin       The margin around the health bar.
+     */
+    HealthBar(final double initialValue, final String style, final int height, final int width, final int margin)
+    {
         this.margin = margin;
-
-        // Create and setup the ProgressBar
         this.progressBar = new ProgressBar(initialValue);
         this.progressBar.setPrefHeight(height);
         this.progressBar.setPrefWidth(width);
         this.progressBar.setStyle(style);
     }
 
-    // Initialize the container with the health bar
-    public VBox setupHealthBar(VBox container) {
-        this.container = container;
+    /**
+     * Adds the health bar to the specified VBox container with the configured margin.
+     *
+     * @param container The VBox container to which the health bar will be added.
+     */
+    public void setupHealthBar(final VBox container)
+    {
         VBox.setMargin(progressBar, new Insets(margin));
         container.getChildren().add(progressBar);
-        return container;
     }
 
-    // Method to update the health bar's progress
-    public void updateHealth(double healthPercentage) {
+    /**
+     * Updates the health bar's progress based on the given health percentage.
+     *
+     * @param healthPercentage The new health value as a percentage (0.0 to 1.0).
+     */
+    public void updateHealth(final double healthPercentage)
+    {
         progressBar.setProgress(healthPercentage);
     }
 
-    // Method to get the ProgressBar (useful if you need to access it directly)
-    public ProgressBar getProgressBar() {
+    /**
+     * Retrieves the ProgressBar instance of this health bar.
+     *
+     * @return The ProgressBar associated with this health bar.
+     */
+    public ProgressBar getProgressBar()
+    {
         return progressBar;
     }
 }

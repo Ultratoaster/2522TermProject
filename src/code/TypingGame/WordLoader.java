@@ -1,36 +1,48 @@
 package TypingGame;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
-public class WordLoader {
+/**
+ * Utility class for loading and retrieving words for the typing game.
+ *
+ * @author Ben Henry
+ * @version 1.0
+ */
+class WordLoader
+{
 
-    // This method will read the words from the file and return them as a List of strings
-    public static List<String> loadWords(String filename) throws IOException {
-        List<String> words = new ArrayList<>();
-        BufferedReader reader = null;
-
-        try {
-            // Open the file for reading
-            reader = new BufferedReader(new FileReader(filename));
+    /**
+     * Loads a list of words from a file specified by the given {@link Path}.
+     * Each line in the file is treated as a single word.
+     *
+     * @param filename the {@link Path} to the file containing the words.
+     * @return a {@link List} of words read from the file.
+     * @throws IOException if an I/O error occurs while reading the file.
+     */
+    static List<String> loadWords(Path filename) throws IOException {
+        final List<String> words = new ArrayList<>();
+        try (final BufferedReader reader = Files.newBufferedReader(filename)) {
             String line;
-
-            // Read each line (word) and add it to the list
             while ((line = reader.readLine()) != null) {
-                words.add(line.trim());  // Add word to list, trim any excess whitespace
-            }
-        } finally {
-            if (reader != null) {
-                reader.close();
+                words.add(line.trim());
             }
         }
-
         return words;
     }
 
-    // This method returns a random word from the list of words
-    public static String getRandomWord(List<String> words) {
-        Random random = new Random();
-        return words.get(random.nextInt(words.size()));  // Select a random word
+    /**
+     * Retrieves a random word from the provided list of words.
+     *
+     * @param words The list of words to choose from.
+     * @return A randomly selected word.
+     */
+    static String getRandomWord(final List<String> words)
+    {
+        final Random random;
+        random = new Random();
+        return words.get(random.nextInt(words.size()));
     }
 }

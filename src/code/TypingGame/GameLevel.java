@@ -3,40 +3,71 @@ package TypingGame;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameLevel {
+/**
+ * Manages the game's current level and notifies registered observers when the level changes.
+ */
+class GameLevel
+{
 
-    private final List<LevelObserver> observers;  // List of observers (Enemies, Background)
-    private int currentLevel;  // The current game level
+    private final List<LevelObserver> observers;
+    private int currentLevel;
 
-    public GameLevel() {
-        this.currentLevel = 1;  // Start at level 1
+    /**
+     * Constructs a GameLevel instance starting at level 1.
+     */
+    GameLevel()
+    {
+        this.currentLevel = 1;
         this.observers = new ArrayList<>();
     }
 
-    // Method to add observers (Enemies, Background Image controllers)
-    public void addObserver(LevelObserver observer) {
+    /**
+     * Registers a new observer to be notified of level changes.
+     *
+     * @param observer The observer to add.
+     */
+    void addObserver(LevelObserver observer)
+    {
         observers.add(observer);
     }
 
-    // Method to remove observers
-    public void removeObserver(LevelObserver observer) {
+    /**
+     * Unregisters an observer, removing it from the notification list.
+     *
+     * @param observer The observer to remove.
+     */
+    void removeObserver(LevelObserver observer)
+    {
         observers.remove(observer);
     }
 
-    // Method to notify all observers when the level changes
-    public void notifyObservers() {
-        for (LevelObserver observer : observers) {
+    /**
+     * Notifies all registered observers of the current level.
+     */
+    void notifyObservers()
+    {
+        for(LevelObserver observer : observers)
+        {
             observer.updateLevel(currentLevel);
         }
     }
 
-    // Method to increase the level
-    public void nextLevel() {
-        currentLevel++;  // Increment level
-        notifyObservers();  // Notify all observers about the level change
+    /**
+     * Advances to the next level and notifies observers of the change.
+     */
+    void nextLevel()
+    {
+        currentLevel++;
+        notifyObservers();
     }
 
-    public int getCurrentLevel() {
+    /**
+     * Retrieves the current level.
+     *
+     * @return The current game level.
+     */
+    int getCurrentLevel()
+    {
         return currentLevel;
     }
 }

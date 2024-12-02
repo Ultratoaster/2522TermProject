@@ -2,7 +2,11 @@ package WordGame;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
 
 /**
  * A word-based game where players answer questions about countries, capitals, and facts.

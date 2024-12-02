@@ -1,44 +1,64 @@
 package TypingGame;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
 
-public class EnemyLoader extends LevelObserver
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * The EnemyLoader class is responsible for loading enemy data from a file and updating the game level.
+ * It implements the LevelObserver interface to observe level changes and adjust enemy characteristics.
+ * <p>
+ * Enemies are loaded from a text file, where each line contains an enemy's name, image location, and health.
+ * The class provides functionality for loading enemies into the game and keeping track of the current game level.
+ *
+ * @author [Your Name]
+ * @version 1.0
+ */
+class EnemyLoader
 {
-    private static int currentLevel = 1;  // Static level tracker
+    /**
+     * Loads the enemies from a text file and returns a list of Enemy objects.
+     * Each line in the file should contain the enemy's name, image location, and health, separated by commas.
+     *
+     * @return A list of Enemy objects loaded from the file.
+     * @throws IOException If an error occurs while reading the file.
+     */
+    static List<Enemy> loadEnemies() throws IOException
+    {
+        final List<Enemy> enemies;
+        final Path filePath;
 
-    // Load enemies from the enemies.txt file in the resources folder
-    public static List<Enemy> loadEnemies() throws IOException {
-        List<Enemy> enemies = new ArrayList<>();
+        enemies = new ArrayList<>();
 
-        // Get the path to the "enemies.txt" file in the "resources" folder
-        Path filePath = Path.of("src", "resources", "enemies.txt");  // Updated path
+        filePath = Path.of("src", "resources", "enemies.txt");
 
-        // Use try-with-resources to read the file
-        try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+        final int NAME_INDEX = 0;
+        final int IMAGE_LOCATION_INDEX = 1;
+        final int HEALTH_INDEX = 2;
+        final String LINE_SPLIT_REGEX = ",";
+        final int EXPECTED_LINE_PART_COUNT = 3;
+
+        try(final BufferedReader reader = Files.newBufferedReader(filePath))
+        {
             String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");  // Split by comma
-                if (parts.length == 3) {
-                    String name = parts[0].trim();  // TypingGame.Enemy name
-                    String imageLocation = parts[1].trim();  // Full path to image in resources
-                    int health = Integer.parseInt(parts[2].trim());  // Health value
+            while((line = reader.readLine()) != null)
+            {
+                String[] parts = line.split(LINE_SPLIT_REGEX);
+                if(parts.length == EXPECTED_LINE_PART_COUNT)
+                {
+                    String name = parts[NAME_INDEX].trim();
+                    String imageLocation = parts[IMAGE_LOCATION_INDEX].trim();
+                    int health = Integer.parseInt(parts[HEALTH_INDEX].trim());
 
                     enemies.add(new Enemy(name, health, imageLocation));
                 }
             }
         }
 
-
-
         return enemies;
-    }
-
-    // Update the current level based on the game level
-    @Override
-    public void updateLevel(final int level) {
-        System.out.println("Current Level: " + currentLevel);
-        currentLevel = level;  // Set the currentLevel to the observed level
     }
 }

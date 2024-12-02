@@ -6,7 +6,8 @@ import java.net.URL;
  * Controller responsible for updating and retrieving the background image path
  * based on the current game level.
  */
-class BackgroundImageController extends LevelObserver {
+class BackgroundImageController implements LevelObserver
+{
 
     private static final int INITIAL_LEVEL = 1;
     private String backgroundImagePath;
@@ -14,7 +15,8 @@ class BackgroundImageController extends LevelObserver {
     /**
      * Constructor that sets the default background for level 1.
      */
-    BackgroundImageController() {
+    BackgroundImageController()
+    {
         updateLevel(INITIAL_LEVEL);
     }
 
@@ -25,7 +27,8 @@ class BackgroundImageController extends LevelObserver {
      * @param level The current game level used to determine the background image.
      */
     @Override
-    public void updateLevel(final int level) {
+    public void updateLevel(final int level)
+    {
         final String folderPath;
         final String imagePath;
         final URL imageURL;
@@ -35,9 +38,12 @@ class BackgroundImageController extends LevelObserver {
         imageURL = getClass().getClassLoader().getResource(imagePath);
 
 
-        if (imageURL != null) {
+        if(imageURL != null)
+        {
             backgroundImagePath = imageURL.toString();
-        } else {
+        }
+        else
+        {
             backgroundImagePath = "images/level_backgrounds/level1_background.png";
         }
     }
@@ -47,7 +53,8 @@ class BackgroundImageController extends LevelObserver {
      *
      * @return The file path or URL of the background image.
      */
-    String getBackground() {
+    String getBackground()
+    {
         return backgroundImagePath;
     }
 }
